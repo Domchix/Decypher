@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Cypher{
+namespace Encryption{
     public static class XOREncryptionDecryption
     {
         public static string Encode(string data, string key)

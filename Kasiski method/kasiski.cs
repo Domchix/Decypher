@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cypher
+namespace Encryption
 {
     public class Pair
     {
