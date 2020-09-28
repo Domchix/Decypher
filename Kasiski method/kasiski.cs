@@ -4,24 +4,19 @@ using System.Linq;
 
 namespace Encryption
 {
-    public class Pair
-    {
-        public int PeriodLength { get; set; }
-        public int CountOfSubstrings { get; set; }
-        public string Substring { get; set; }
-    }
-
     public static class Kasiski
     {
-        public static int MinKeyLength { get; set; } = 4;
-        public static int MinDigramLength {get;set;} = 4;
-        public static int MaxDigramLength { get; set; } = 4;
-        private static IEnumerable<int> GetDivisors(int n)
+        private class Pair
         {
-            return from a in Enumerable.Range(2, n / 2)
-                where n % a == 0
-                select a;
+            public int PeriodLength { get; set; }
+            public int CountOfSubstrings { get; set; }
+            public string Substring { get; set; }
         }
+        public static int MinKeyLength { get; set; } = 4;
+        public static int MinDigramLength { get; set; } = 2;
+        public static int MaxDigramLength { get; set; } = 2;
+        public static bool PrintResult { get; set; } = false;
+
 
         public static int FindKeyLength(string text)
         {
@@ -40,7 +35,8 @@ namespace Encryption
                             if (matchingPairs.Any(n => n.PeriodLength == j - i && n.Substring == temp2))
                                 matchingPairs.FirstOrDefault(n => n.PeriodLength == j - i).CountOfSubstrings++;
                             else
-                                matchingPairs.Add(new Pair {
+                                matchingPairs.Add(new Pair
+                                {
                                     PeriodLength = j - i,
                                     CountOfSubstrings = 1,
                                     Substring = temp2
@@ -52,8 +48,10 @@ namespace Encryption
 
             // Get all different deviders and count ammount
             List<Pair> deviders = new List<Pair>();
-            foreach(Pair matchingPair in matchingPairs){
-                foreach(var divisor in GetDivisors(matchingPair.PeriodLength).Append(matchingPair.PeriodLength)){
+            foreach (Pair matchingPair in matchingPairs)
+            {
+                foreach (var divisor in GetDivisors(matchingPair.PeriodLength).Append(matchingPair.PeriodLength))
+                {
                     if (deviders.Any(n => n.PeriodLength == divisor))
                         deviders.FirstOrDefault(n => n.PeriodLength == divisor).CountOfSubstrings += matchingPair.CountOfSubstrings;
                     else
@@ -64,13 +62,25 @@ namespace Encryption
                         });
                 }
             }
+
             // Filter out smaller keys, order by count and take the highest one
-            var matrix = deviders.OrderByDescending(n => n.CountOfSubstrings).ToList();
-            Console.WriteLine("Devidor  | Number of pairs");
-            foreach(var item in matrix.Take(10)){
-                Console.WriteLine($"{item.PeriodLength} \t | {item.CountOfSubstrings}");
+            if (PrintResult)
+            {
+                var matrix = deviders.OrderByDescending(n => n.CountOfSubstrings).ToList();
+                Console.WriteLine("Length \t | Number of pairs");
+                foreach (var item in matrix.Take(10))
+                {
+                    Console.WriteLine($"{item.PeriodLength} \t | {item.CountOfSubstrings}");
+                }
             }
             return deviders.Where(n => n.PeriodLength >= MinKeyLength).OrderByDescending(n => n.CountOfSubstrings).ToList()[0].PeriodLength;
+        }
+
+        private static IEnumerable<int> GetDivisors(int n)
+        {
+            return from a in Enumerable.Range(2, n / 2)
+                   where n % a == 0
+                   select a;
         }
     }
 }

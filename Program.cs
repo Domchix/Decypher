@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -6,24 +7,29 @@ namespace Encryption
 {
     class Program
     {
-        private static string FileName {get;set;} = "text.txt";
         static void Main(string[] args)
         {
-            Kasiski();
-            Cypher();
+            TestKasiski();
         }
 
-        private static void Kasiski(){
-            string text = File.ReadAllText(FileName);
+        private static void TestKasiski()
+        {
+            // Read file, clean text
+            string fileName = "Kasiski method/Tests/test2.txt";
+            string text = File.ReadAllText(fileName);
             text = text.Replace(" ", "").Replace("\r", "").Replace("\n", "").ToLower();
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
             text = rgx.Replace(text, "");
 
-            //int keyLength = Kasiski.FindKeyLength(text);
-            //Console.WriteLine($"Key length: {keyLength}");
+            Kasiski.MinDigramLength = 2;
+            Kasiski.MaxDigramLength = 2;
+            Kasiski.PrintResult = true;
+            int keyLength = Kasiski.FindKeyLength(text);
+            Console.WriteLine($"Key length: {keyLength}");
         }
 
-        private static void Cypher(){
+        private static void Cypher()
+        {
             string ans = XOREncryptionDecryption.Encode("test text", "01001001011001110110111101110010011010010111001101100010011001010110110001101111011101100110000101110011");
             Console.WriteLine(ans);
 
