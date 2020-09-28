@@ -13,8 +13,8 @@ namespace Encryption
             public string Substring { get; set; }
         }
         public static int MinKeyLength { get; set; } = 4;
-        public static int MinDigramLength { get; set; } = 2;
-        public static int MaxDigramLength { get; set; } = 2;
+        public static int MinDigramLength { get; set; } = 3;
+        public static int MaxDigramLength { get; set; } = 3;
         public static bool PrintResult { get; set; } = false;
 
 
