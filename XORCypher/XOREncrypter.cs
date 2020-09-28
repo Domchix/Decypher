@@ -10,7 +10,7 @@ namespace Encryption{
             string code = "";
 
             foreach(char c in data){
-                bin_data += DecToBinary((int)c, 8);
+                bin_data += Converter.DecToBinary((int)c, 8);
             }
 
             foreach(var i in Enumerable.Range(0, bin_data.Length)){
@@ -31,39 +31,12 @@ namespace Encryption{
 
             string ans = "";
             for(int i=0; i<code.Length; i=i+8){
-                 ans += (char)BinToDec(code.Substring(i, 8));
+                 ans += (char)Converter.BinToDec(code.Substring(i, 8));
             }
 
             return ans;
         }
 
-        // expects a integer value and length of the binary string (e.g. 4, 8, 16).
-        private static string DecToBinary(int value, int length)
-        {
-            string binString = "";
-
-            while (value > 0)
-            {
-                binString += value % 2;
-                value /= 2;
-            }
-
-            // we need to reverse the binary string
-            string reverseString = "";
-            foreach (char c in binString)
-                reverseString = new string((char)c, 1) + reverseString;
-            binString = reverseString;
-
-            // padding
-            binString = new string((char)'0', length - binString.Length) + binString;
-
-            return binString;
-        }
-
-        // expects the binary string and returns it's integer equivalent
-        private static int BinToDec(string Binary)
-        {
-            return Convert.ToInt32(Binary, 2);
-        }
+        
     }
 }
