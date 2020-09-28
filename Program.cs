@@ -9,13 +9,20 @@ namespace Encryption
     {
         static void Main(string[] args)
         {
-            TestKasiski();
+            TestGolomb();
+        }
+
+        private static void TestGolomb(){
+            string text = "01001001011001110110111101110010011010010111001101100010011001010110110001101111011101100110000101110011";
+            Console.WriteLine($"T1: {GolombTests.SingleBitTest(text)}");
+            Console.WriteLine($"T2: {GolombTests.PairBitTest(text)}");
+            Console.WriteLine($"T4: {GolombTests.BlockTest(text)}");
         }
 
         private static void TestKasiski()
         {
             // Read file, clean text
-            string fileName = "Kasiski method/Tests/test2.txt";
+            string fileName = "Kasiski method/Tests/test.txt";
             string text = File.ReadAllText(fileName);
             text = text.Replace(" ", "").Replace("\r", "").Replace("\n", "").ToLower();
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
