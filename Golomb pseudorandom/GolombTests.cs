@@ -6,15 +6,15 @@ namespace Encryption
 {
     public static class GolombTests
     {
-        private static double P { get; set; } = 3.84146;
-        public static double SingleBitTest(string binary, bool convertToBinary = true)
+        public static (bool, double) SingleBitTest(string binary, double check)
         {
             int n0 = binary.Count(c => c == '0');
             int n1 = binary.Count(c => c == '1');
+            double T = (Math.Pow((n1 - n0), 2) / binary.Length);
 
-            return (Math.Pow((n1 - n0), 2) / binary.Length);
+            return (T < check, T);
         }
-        public static double PairBitTest(string binary)
+        public static (bool, double) PairBitTest(string binary, double check)
         {
             int n0 = binary.Count(c => c == '0');
             int n1 = binary.Count(c => c == '1');
@@ -46,10 +46,11 @@ namespace Encryption
             }
 
             double n = binary.Length;
+            double T = ((4 / (n - 1)) * (Math.Pow(n00, 2) + Math.Pow(n01, 2) + Math.Pow(n10, 2) + Math.Pow(n11, 2)) - ((2 / n) * (Math.Pow(n0, 2) + Math.Pow(n1, 2))) + 1);
 
-            return ((4 / (n - 1)) * (Math.Pow(n00, 2) + Math.Pow(n01, 2) + Math.Pow(n10, 2) + Math.Pow(n11, 2)) - ((2 / n) * (Math.Pow(n0, 2) + Math.Pow(n1, 2))) + 1);
+            return (T < check, T);
         }
-        public static double BlockTest(string binary)
+        public static (bool, double) BlockTest(string binary, double check)
         {
             char currentChar = binary[0];
             int currentLength = 1;
@@ -87,13 +88,45 @@ namespace Encryption
                 E = formula(i);
             }
 
-            return T;
+            return (T < check, T);
         }
 
-        public static double AutocorelationTest()
+        public static (bool, double) AutocorelationTest(string binary, double check)
         {
-            // use sort
-            return 0;
+            int length = binary.Length;
+            int d = length / 2;
+            int Xd = 0;
+
+            for (int i = 0; i < length - d; i++)
+            {
+                if (binary[i] == binary[i + d - 1])
+                {
+                    Xd += 1;
+                }
+            }
+
+            double T = Math.Abs((2 * Xd - length + d) / (Math.Sqrt(length - d)));
+
+            return (T < check, T);
+        }
+
+        public static void RunAndPrintTests(string binary, CheckConstants checks)
+        {
+            (bool testResult, double tValue) = SingleBitTest(binary, checks.Check1);
+            Console.Write($"-Single Bit Test- \n Result: {testResult} \n Value: {tValue} \n");
+            (testResult, tValue) = PairBitTest(binary, checks.Check2);
+            Console.Write($"-Pair Bit Test- \n Result: {testResult} \n Value: {tValue} \n");
+            (testResult, tValue) = BlockTest(binary, checks.Check4);
+            Console.Write($"-Single Bit Test- \n Result: {testResult} \n Value: {tValue} \n");
+            (testResult, tValue) = AutocorelationTest(binary, checks.Check5);
+            Console.Write($"-Autocorelation Test- \n Result: {testResult} \n Value: {tValue} \n");
+        }
+
+        public class CheckConstants{
+            public double Check1 { get; set; }
+            public double Check2 { get; set; }
+            public double Check4 { get; set; }
+            public double Check5 { get; set; }
         }
     }
 }
